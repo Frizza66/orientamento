@@ -23,6 +23,16 @@
             margin: 0 auto;
         }
 
+        /* ========== IMMAGINE DI INTESTAZIONE ========== */
+        .header-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
         header {
             text-align: center;
             color: white;
@@ -67,46 +77,29 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
 
+        /* Cover colorata senza immagini */
         .activity-cover {
-            height: 200px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4em;
-            color: white;
             position: relative;
-            overflow: hidden;
-        }
-
-        .activity-cover::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: inherit;
-            opacity: 0.9;
-        }
-
-        .activity-cover span {
-            position: relative;
-            z-index: 1;
         }
 
         .activity-info {
-            padding: 20px;
+            padding: 25px;
         }
 
         .activity-info h3 {
             color: #333;
             margin-bottom: 10px;
-            font-size: 1.3em;
+            font-size: 1.4em;
         }
 
         .activity-info p {
             color: #666;
             line-height: 1.6;
+            font-size: 1em;
         }
 
         .activity-tag {
@@ -114,7 +107,7 @@
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.85em;
-            margin-top: 10px;
+            margin-top: 15px;
             font-weight: bold;
         }
 
@@ -145,11 +138,19 @@
             .activities-grid {
                 grid-template-columns: 1fr;
             }
+
+            .header-image {
+                max-height: 200px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+
+        <!-- IMMAGINE DI INTESTAZIONE -->
+        <img src="intestazione.jpeg" alt="Intestazione Orientamento" class="header-image">
+
         <header>
             <h1>🎓 Orientamento - Terza Media</h1>
             <p>Giochi e attività per scoprire il tuo futuro!</p>
@@ -157,23 +158,19 @@
 
         <div class="activities-grid">
             
-            <!-- ATTIVITÀ 1 -->
-            <a href="attivita1.html" class="activity-card">
-                <div class="activity-cover cover-1">
-                    <span>🎯</span>
-                </div>
+            <!-- GIOCO 1: Gioco dell'oca -->
+            <a href="orienta-oca.html" class="activity-card">
+                <div class="activity-cover cover-1"></div>
                 <div class="activity-info">
-                    <h3>Scopri le tue passioni</h3>
-                    <p>Un quiz interattivo per identificare i tuoi interessi e le tue attitudini.</p>
-                    <span class="activity-tag tag-quiz">Quiz</span>
+                    <h3>Gioco dell'oca sull'orientamento</h3>
+                    <p>Un classico gioco dell'oca rivisitato per affrontare le scelte della scuola superiore in modo divertente.</p>
+                    <span class="activity-tag tag-game">Gioco</span>
                 </div>
             </a>
 
             <!-- ATTIVITÀ 2 -->
             <a href="attivita2.html" class="activity-card">
-                <div class="activity-cover cover-2">
-                    <span>🗺️</span>
-                </div>
+                <div class="activity-cover cover-2"></div>
                 <div class="activity-info">
                     <h3>Mappa delle scuole</h3>
                     <p>Esplora le diverse scuole superiori della tua zona e scopri cosa offrono.</p>
@@ -183,9 +180,7 @@
 
             <!-- ATTIVITÀ 3 -->
             <a href="attivita3.html" class="activity-card">
-                <div class="activity-cover cover-3">
-                    <span>💼</span>
-                </div>
+                <div class="activity-cover cover-3"></div>
                 <div class="activity-info">
                     <h3>Le professioni del futuro</h3>
                     <p>Gioco di ruolo per immaginare il tuo futuro professionale.</p>
@@ -195,9 +190,7 @@
 
             <!-- ATTIVITÀ 4 -->
             <a href="attivita4.html" class="activity-card">
-                <div class="activity-cover cover-4">
-                    <span>🤝</span>
-                </div>
+                <div class="activity-cover cover-4"></div>
                 <div class="activity-info">
                     <h3>Lavoro di squadra</h3>
                     <p>Attività collaborative per sviluppare le tue soft skills.</p>
@@ -207,9 +200,7 @@
 
             <!-- ATTIVITÀ 5 -->
             <a href="attivita5.html" class="activity-card">
-                <div class="activity-cover cover-5">
-                    <span>📊</span>
-                </div>
+                <div class="activity-cover cover-5"></div>
                 <div class="activity-info">
                     <h3>Il mio percorso</h3>
                     <p>Crea la tua mappa personale per il futuro.</p>
@@ -219,9 +210,7 @@
 
             <!-- ATTIVITÀ 6 -->
             <a href="attivita6.html" class="activity-card">
-                <div class="activity-cover cover-6">
-                    <span>🎲</span>
-                </div>
+                <div class="activity-cover cover-6"></div>
                 <div class="activity-info">
                     <h3>Gioco dell'orientamento</h3>
                     <p>Un gioco da tavolo per affrontare le scelte del futuro.</p>
@@ -230,9 +219,8 @@
             </a>
 
             <!-- Per aggiungere nuove attività, copia il blocco sopra e modifica:
-                 - href: il link alla pagina dell'attività
+                 - href: il link alla pagina dell'attività (es. orienta-oca.html)
                  - cover-X: il numero del colore (1-6)
-                 - emoji nell'<span>
                  - titolo in <h3>
                  - descrizione in <p>
                  - tag (game, activity, quiz)
