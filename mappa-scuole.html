@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mappa dell'Orientamento - Dopo la classe terza della scuola secondaria di primo grado</title>
+    <!-- Caricamento Tailwind CSS per uno stile moderno, pulito e responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Caricamento Font Google: Fredoka per i titoli giocosi e Nunito per la massima leggibilità -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Caricamento FontAwesome per icone chiare e divertenti -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        mappaSfondo: '#F0F7F4',
+                        sentiero: '#E2E8F0',
+                        liceoColor: '#3B82F6',
+                        tecnicoColor: '#10B981',
+                        profColor: '#F59E0B',
+                        iefpColor: '#8B5CF6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Stili personalizzati per animazioni dolci e pattern della mappa */
+        body {
+            background-color: #F4F9F6;
+            background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+            background-size: 28px 28px;
+        }
+        
+        .card-tappa {
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        }
+        
+        .card-tappa:hover {
+            transform: translateY(-6px) scale(1.02);
+        }
+
+        /* Animazione leggera per la bussola guida */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
+        }
+        .animate-float {
+            animation: float 3.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-amber-200 selection:text-slate-900 pb-16">
+
+    <!-- Intestazione Semplice e Accogliente -->
+    <header class="bg-white border-b-4 border-emerald-200 shadow-sm sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 text-center sm:text-left">
+                <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner animate-float shrink-0">
+                    🧭
+                </div>
+                <div>
+                    <h1 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
+                        La Mappa del Tuo Futuro
+                    </h1>
+                    <p class="text-slate-600 text-sm sm:text-base font-semibold">
+                        Esplora le strade dopo la classe terza della scuola secondaria di primo grado con un semplice clic!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pulsante Aiuto / Mini-Quiz Guidato per chi è indeciso -->
+            <button onclick="apriBussola()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 px-6 rounded-2xl shadow-md transition flex items-center justify-center gap-2 text-base sm:text-lg cursor-pointer">
+                <span>🤔</span> Non sai da dove iniziare? Fatti aiutare!
+            </button>
+        </div>
+    </header>
+
+    <!-- Barra di Istruzioni Facili (Pensata per utenti poco esperti) -->
+    <section class="max-w-5xl mx-auto px-4 mt-6">
+        <div class="bg-white/90 backdrop-blur border-2 border-slate-200 rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">👆</span>
+                <p class="text-slate-700 text-base sm:text-lg font-medium">
+                    <strong>Come funziona:</strong> Tocca una delle <strong>4 grandi isole</strong> qui sotto per scoprire cosa si studia, quanto dura e cosa potrai fare dopo.
+                </p>
+            </div>
+            <!-- Controllo dimensione testo per massima accessibilità -->
+            <div class="flex items-center gap-2 shrink-0 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 px-2">Testo:</span>
+                <button onclick="cambiaTesto('normal')" id="btn-text-norm" class="px-3 py-1.5 rounded-xl font-bold text-sm bg-white shadow text-slate-800 cursor-pointer">Normale</button>
+                <button onclick="cambiaTesto('large')" id="btn-text-large" class="px-3 py-1.5 rounded-xl font-bold text-base text-slate-600 hover:bg-white/60 cursor-pointer">Grande +</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- IL PERCORSO DELLA MAPPA -->
+    <main id="contenitore-principale" class="max-w-6xl mx-auto px-4 mt-8 relative">
+        
+        <!-- Punto di Partenza: La Terza Media -->
+        <div class="flex flex-col items-center mb-8">
+            <div class="bg-slate-800 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-3 border-4 border-white text-center">
+                <span class="text-2xl shrink-0">🎒</span>
+                <span class="font-display text-base sm:text-xl font-bold tracking-wide">PARTENZA: Fine classe terza della scuola secondaria di primo grado</span>
+            </div>
+            <!-- Linea tratteggiata che scende verso le 4 strade -->
+            <div class="h-10 w-1.5 border-l-4 border-dashed border-slate-400 my-1"></div>
+            <div class="bg-amber-100 text-amber-900 font-bold px-4 py-1.5 rounded-full text-sm border border-amber-300 shadow-sm">
+                ⬇️ Scegli una direzione da esplorare ⬇️
+            </div>
+        </div>
+
+        <!-- Griglia delle 4 Tappe Principali della Mappa -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+
+            <!-- TAPPA 1: I LICEI -->
+            <div onclick="apriDettaglio('licei')" class="card-tappa bg-white rounded-3xl p-6 sm:p-8 border-4 border-blue-200 hover:border-blue-500 shadow-md cursor-pointer relative overflow-hidden group">
+                <div class="absolute top-0 right-0 bg-blue-500 text-white font-bold px-4 py-1.5 rounded-bl-2xl text-sm">
+                    ⏳ Dura 5 Anni
+                </div>
+                <div class="flex items-start gap-4 mb-4 mt-2">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition">
+                        🏛️
+                    </div>
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">Strada della Teoria e Cultura</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 mt-1">I Licei</h2>
+                    </div>
+                </div>
+                <p class="descrizione-card text-slate-600 text-base sm:text-lg mb-6 leading-relaxed">
+                    Ideale se ti piace <strong>studiare sui libri</strong>, approfondire la cultura generale, le lingue, le scienze o l'arte e hai già in mente di proseguire all'<strong>Università</strong>.
+                </p>
+                <div class="flex items-center justify-between pt-4 border-t-2 border-slate-100">
+                    <div class="flex gap-2 text-2xl" title="Materie tipiche">
+                        <span>📚</span><span>🔬</span><span>🎨</span><span>🌍</span>
+                    </div>
+                    <span class="bg-blue-600 group-hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-base flex items-center gap-2 transition">
+                        Esplora i Licei <span>➡️</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- TAPPA 2: GLI ISTITUTI TECNICI -->
+            <div onclick="apriDettaglio('tecnici')" class="card-tappa bg-white rounded-3xl p-6 sm:p-8 border-4 border-emerald-200 hover:border-emerald-500 shadow-md cursor-pointer relative overflow-hidden group">
+                <div class="absolute top-0 right-0 bg-emerald-600 text-white font-bold px-4 py-1.5 rounded-bl-2xl text-sm">
+                    ⏳ Dura 5 Anni
+                </div>
+                <div class="flex items-start gap-4 mb-4 mt-2">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition">
+                        💻
+                    </div>
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">Strada della Tecnologia e Economia</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 mt-1">Istituti Tecnici</h2>
+                    </div>
+                </div>
+                <p class="descrizione-card text-slate-600 text-base sm:text-lg mb-6 leading-relaxed">
+                    Perfetto se vuoi unire <strong>studio e laboratori pratici</strong>. Ti prepara sia per lavorare subito come tecnico specializzato, sia per andare all'Università.
+                </p>
+                <div class="flex items-center justify-between pt-4 border-t-2 border-slate-100">
+                    <div class="flex gap-2 text-2xl" title="Ambiti tipici">
+                        <span>⚙️</span><span>📊</span><span>🌱</span><span>✈️</span>
+                    </div>
+                    <span class="bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-base flex items-center gap-2 transition">
+                        Esplora i Tecnici <span>➡️</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- TAPPA 3: GLI ISTITUTI PROFESSIONALI -->
+            <div onclick="apriDettaglio('professionali')" class="card-tappa bg-white rounded-3xl p-6 sm:p-8 border-4 border-amber-200 hover:border-amber-500 shadow-md cursor-pointer relative overflow-hidden group">
+                <div class="absolute top-0 right-0 bg-amber-500 text-white font-bold px-4 py-1.5 rounded-bl-2xl text-sm">
+                    ⏳ Dura 5 Anni
+                </div>
+                <div class="flex items-start gap-4 mb-4 mt-2">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-100 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition">
+                        👨‍🍳
+                    </div>
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg">Strada del Saper Fare</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 mt-1">Istituti Professionali</h2>
+                    </div>
+                </div>
+                <p class="descrizione-card text-slate-600 text-base sm:text-lg mb-6 leading-relaxed">
+                    Adatto se impari meglio <strong>facendo pratica fin da subito</strong> con stage in azienda e laboratori. Ti dà un diploma completo per entrare nel mondo del lavoro.
+                </p>
+                <div class="flex items-center justify-between pt-4 border-t-2 border-slate-100">
+                    <div class="flex gap-2 text-2xl" title="Mestieri tipici">
+                        <span>🍳</span><span>🔧</span><span>🩺</span><span>🏨</span>
+                    </div>
+                    <span class="bg-amber-500 group-hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-xl text-base flex items-center gap-2 transition">
+                        Esplora i Professionali <span>➡️</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- TAPPA 4: FORMAZIONE PROFESSIONALE (IeFP) -->
+            <div onclick="apriDettaglio('iefp')" class="card-tappa bg-white rounded-3xl p-6 sm:p-8 border-4 border-purple-200 hover:border-purple-500 shadow-md cursor-pointer relative overflow-hidden group">
+                <div class="absolute top-0 right-0 bg-purple-600 text-white font-bold px-4 py-1.5 rounded-bl-2xl text-sm">
+                    ⚡ Dura 3 o 4 Anni
+                </div>
+                <div class="flex items-start gap-4 mb-4 mt-2">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-purple-100 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition">
+                        🛠️
+                    </div>
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg">Strada Rapida verso il Mestiere</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 mt-1">Corsi Regionali (IeFP)</h2>
+                    </div>
+                </div>
+                <p class="descrizione-card text-slate-600 text-base sm:text-lg mb-6 leading-relaxed">
+                    La scelta giusta se vuoi imparare <strong>un mestiere concreto in tempi brevi</strong> (3 anni per la qualifica, 4 per il diploma professionale), con tante ore in laboratorio.
+                </p>
+                <div class="flex items-center justify-between pt-4 border-t-2 border-slate-100">
+                    <div class="flex gap-2 text-2xl" title="Laboratori">
+                        <span>💇‍♀️</span><span>⚡</span><span>🥐</span><span>🚗</span>
+                    </div>
+                    <span class="bg-purple-600 group-hover:bg-purple-700 text-white font-bold px-5 py-2.5 rounded-xl text-base flex items-center gap-2 transition">
+                        Esplora i Corsi <span>➡️</span>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tappa Finale della Mappa: Il Traguardo -->
+        <div class="flex flex-col items-center mt-10">
+            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-3xl p-6 max-w-3xl w-full text-center shadow-sm">
+                <div class="text-4xl mb-2">🏁</div>
+                <h3 class="font-display text-xl sm:text-2xl font-bold text-slate-800 mb-2">Ricorda: Nessuna strada è chiusa per sempre!</h3>
+                <p class="text-slate-700 text-base sm:text-lg">
+                    Se durante il primo o secondo anno ti accorgi di aver sbagliato strada, puoi sempre chiedere un <strong>passaggio</strong> ad un'altra scuola con l'aiuto dei tuoi professori.
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FINESTRA DI DETTAGLIO (MODALE GRANDE E FACILE DA CHIUDERE) -->
+    <div id="modale-dettaglio" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border-4 border-slate-200 overflow-hidden my-auto animate-fadeIn">
+            
+            <!-- Barra superiore colorata dinamica -->
+            <div id="modale-header" class="p-5 sm:p-6 text-white flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span id="modale-icona" class="text-4xl sm:text-5xl bg-white/20 p-3 rounded-2xl">🏛️</span>
+                    <div>
+                        <span id="modale-durata" class="text-xs sm:text-sm font-bold uppercase tracking-wider bg-black/20 px-3 py-1 rounded-full">Durata: 5 anni</span>
+                        <h2 id="modale-titolo" class="font-display text-2xl sm:text-3xl font-bold mt-1">Titolo Scuola</h2>
+                    </div>
+                </div>
+                <!-- Tasto Chiudi grande ed evidente -->
+                <button onclick="chiudiModale()" class="bg-white text-slate-800 hover:bg-slate-100 font-extrabold px-4 py-2.5 rounded-2xl shadow-md flex items-center gap-2 text-base sm:text-lg cursor-pointer shrink-0">
+                    <span>✖️</span> <span class="hidden sm:inline">Torna alla Mappa</span>
+                </button>
+            </div>
+
+            <!-- Contenuto della scheda scuola -->
+            <div class="p-5 sm:p-8 max-h-[75vh] overflow-y-auto space-y-6">
+                
+                <!-- Riassunto semplice -->
+                <div class="bg-slate-50 p-5 rounded-2xl border-2 border-slate-100">
+                    <h3 class="font-display text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                        <span>💡</span> In parole semplici: cos'è?
+                    </h3>
+                    <p id="modale-descrizione" class="text-slate-700 text-base sm:text-lg leading-relaxed"></p>
+                </div>
+
+                <!-- Elenco degli indirizzi principali con icone -->
+                <div>
+                    <h3 class="font-display text-xl font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <span>🧭</span> Quali indirizzi puoi scegliere dentro questa strada?
+                    </h3>
+                    <div id="modale-indirizzi" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Popolato via JS -->
+                    </div>
+                </div>
+
+                <!-- Cosa succede dopo il diploma -->
+                <div class="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200">
+                    <h3 class="font-display text-xl font-bold text-amber-900 mb-2 flex items-center gap-2">
+                        <span>🎓</span> E dopo il diploma, cosa puoi fare?
+                    </h3>
+                    <p id="modale-dopo" class="text-amber-950 text-base sm:text-lg leading-relaxed"></p>
+                </div>
+
+            </div>
+
+            <!-- Footer della finestra con tasto di ritorno grande -->
+            <div class="bg-slate-100 p-4 border-t border-slate-200 flex justify-center">
+                <button onclick="chiudiModale()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 px-8 rounded-2xl text-lg shadow transition flex items-center justify-center gap-2 cursor-pointer">
+                    <span>🗺️</span> Torna alla Mappa Principale
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINESTRA BUSSOLA GUIDATA (MINI-QUIZ SEMPLICE IN 3 DOMANDE) -->
+    <div id="modale-bussola" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border-4 border-indigo-200 overflow-hidden my-auto">
+            <div class="bg-indigo-600 p-5 sm:p-6 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">🧭</span>
+                    <div>
+                        <h2 class="font-display text-2xl font-bold">La Bussola dell'Orientamento</h2>
+                        <p class="text-indigo-100 text-sm">Rispondi a 3 domande facili per trovare la tua isola!</p>
+                    </div>
+                </div>
+                <button onclick="chiudiBussola()" class="bg-white text-indigo-900 font-bold px-3.5 py-2 rounded-xl shadow cursor-pointer">
+                    ✖️ Chiudi
+                </button>
+            </div>
+
+            <div id="bussola-body" class="p-6 sm:p-8">
+                <!-- Contenuto dinamico del quiz -->
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGICA JAVASCRIPT -->
+    <script>
+        // Database completo, chiaro e privo di termini burocratici complessi
+        const datiScuole = {
+            licei: {
+                titolo: "I Licei",
+                durata: "Durata: 5 Anni (Diploma di Maturità)",
+                icona: "🏛️",
+                coloreHeader: "bg-blue-600",
+                descrizione: "Il Liceo è una scuola che ti dà una preparazione culturale molto ampia e solida. Si passano diverse ore a leggere, ragionare, scrivere e studiare materie teoriche. Non insegna un lavoro manuale specifico, ma ti allena la mente per affrontare l'Università.",
+                dopo: "Quasi tutti gli studenti dei licei proseguono gli studi iscrivendosi all'Università o alle Accademie (di Belle Arti, Musica, ecc.). Con il solo diploma di liceo è più difficile trovare subito un lavoro tecnico.",
+                indirizzi: [
+                    { nome: "Liceo Scientifico", desc: "Matematica, fisica, scienze e logica (anche opzione Scienze Applicate con informatica).", icona: "🔬" },
+                    { nome: "Liceo Classico", desc: "Cultura umanistica, storia, filosofia, letteratura italiana, latino e greco antico.", icona: "🏺" },
+                    { nome: "Liceo Linguistico", desc: "Studio approfondito di tre lingue straniere e delle loro culture.", icona: "🌍" },
+                    { nome: "Liceo delle Scienze Umane", desc: "Psicologia, pedagogia, sociologia e funzionamento della mente e della società.", icona: "🧠" },
+                    { nome: "Liceo Artistico", desc: "Disegno, pittura, scultura, architettura, grafica e design.", icona: "🎨" },
+                    { nome: "Liceo Musicale e Coreutico", desc: "Per chi ama suonare uno strumento o studiare danza a livello professionale.", icona: "🎵" }
+                ]
+            },
+            tecnici: {
+                titolo: "Gli Istituti Tecnici",
+                durata: "Durata: 5 Anni (Diploma Tecnico)",
+                icona: "💻",
+                coloreHeader: "bg-emerald-600",
+                descrizione: "Gli Istituti Tecnici sono una via di mezzo perfetta tra teoria e pratica. Nei primi due anni si studiano le materie generali, mentre dal terzo anno si entra nei laboratori per imparare come funzionano l'economia, le aziende, i computer, la chimica o le costruzioni.",
+                dopo: "Hai due ottime strade: puoi cercare subito un lavoro qualificato (es. programmatore, ragioniere, geometra, perito) oppure iscriverti all'Università o agli ITS (scuole tecniche post-diploma).",
+                indirizzi: [
+                    { nome: "Amministrazione, Finanza e Marketing", desc: "Economia, gestione aziendale, contabilità e diritto (ex Ragioneria).", icona: "📊" },
+                    { nome: "Turismo", desc: "Lingue straniere, geografia e organizzazione di viaggi ed eventi turistici.", icona: "✈️" },
+                    { nome: "Informatica e Telecomunicazioni", desc: "Programmazione, creazione di siti web, reti e tecnologia digitale.", icona: "💻" },
+                    { nome: "Meccanica, Meccatronica ed Energia", desc: "Progettazione di motori, robotica e impianti energetici.", icona: "⚙️" },
+                    { nome: "Costruzioni, Ambiente e Territorio", desc: "Progettazione di case, sicurezza nei cantieri e tutela ambientale (ex Geometra).", icona: "🏗️" },
+                    { nome: "Agraria e Agroindustria", desc: "Coltivazione, tutela dell'ambiente, produzione alimentare e animali.", icona: "🌱" }
+                ]
+            },
+            professionali: {
+                titolo: "Gli Istituti Professionali",
+                durata: "Durata: 5 Anni (Diploma Professionale)",
+                icona: "👨‍🍳",
+                coloreHeader: "bg-amber-500",
+                descrizione: "Negli Istituti Professionali si impara soprattutto 'mettendo le mani in pasta'. Ci sono moltissime ore di laboratorio pratico e tirocini (stage) direttamente nelle aziende del territorio per imparare un mestiere vero.",
+                dopo: "Puoi entrare subito nel mondo del lavoro con un diploma riconosciuto, iscriverti a corsi di specializzazione (ITS) oppure scegliere comunque di andare all'Università.",
+                indirizzi: [
+                    { nome: "Enogastronomia e Ospitalità Alberghiera", desc: "Cucina, pasticceria, sala bar e accoglienza negli hotel.", icona: "🍳" },
+                    { nome: "Manutenzione e Assistenza Tecnica", desc: "Riparazione di impianti elettrici, meccanici, auto e macchinari.", icona: "🔧" },
+                    { nome: "Servizi per la Sanità e l'Assistenza Sociale", desc: "Cura e supporto a bambini, anziani e persone con disabilità.", icona: "🩺" },
+                    { nome: "Servizi Commerciali", desc: "Vendite, pubblicità, grafica pubblicitaria e gestione negozi.", icona: "🛍️" },
+                    { nome: "Industria e Artigianato per il Made in Italy", desc: "Moda, sartoria, lavorazione del legno, oreficeria e prodotti italiani.", icona: "👗" }
+                ]
+            },
+            iefp: {
+                titolo: "Corsi di Formazione Professionale (IeFP)",
+                durata: "Durata: 3 Anni (Qualifica) o 4 Anni (Diploma)",
+                icona: "🛠️",
+                coloreHeader: "bg-purple-600",
+                descrizione: "Sono corsi organizzati dalle Regioni (spesso presso centri di formazione accreditati). Sono molto pratici, con poche materie teoriche e tantissimo laboratorio e stage in azienda. Perfetti se non ami stare tante ore seduto sui libri.",
+                dopo: "Dopo 3 anni ottieni subito una Qualifica Professionale per andare a lavorare. Se vuoi, puoi fare un 4° anno per prendere il Diploma Professionale (e volendo, un 5° anno per accedere all'Università).",
+                indirizzi: [
+                    { nome: "Operatore del Benessere", desc: "Acconciatura (parrucchiere) ed estetica.", icona: "💇‍♀️" },
+                    { nome: "Operatore della Ristorazione", desc: "Preparazione pasti, panificazione, pasticceria e servizio ai tavoli.", icona: "🥐" },
+                    { nome: "Operatore Riparazione Veicoli", desc: "Meccanico d'auto, elettrauto e gommista.", icona: "🚗" },
+                    { nome: "Operatore Elettrico ed Elettronico", desc: "Installazione di impianti elettrici civili e industriali.", icona: "⚡" },
+                    { nome: "Operatore Grafico e Informatico", desc: "Grafica digitale, stampa e assistenza computer.", icona: "🖥️" }
+                ]
+            }
+        };
+
+        // Funzione per aprire la scheda di una scuola
+        function apriDettaglio(chiave) {
+            const scuola = datiScuole[chiave];
+            if (!scuola) return;
+
+            // Imposta colori e testi
+            const header = document.getElementById('modale-header');
+            header.className = `p-5 sm:p-6 text-white flex items-center justify-between ${scuola.coloreHeader}`;
+            
+            document.getElementById('modale-icona').textContent = scuola.icona;
+            document.getElementById('modale-durata').textContent = scuola.durata;
+            document.getElementById('modale-titolo').textContent = scuola.titolo;
+            document.getElementById('modale-descrizione').textContent = scuola.descrizione;
+            document.getElementById('modale-dopo').textContent = scuola.dopo;
+
+            // Costruisce le card dei singoli indirizzi
+            const containerIndirizzi = document.getElementById('modale-indirizzi');
+            containerIndirizzi.innerHTML = '';
+            
+            scuola.indirizzi.forEach(ind => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-4 rounded-2xl border-2 border-slate-200 flex items-start gap-3 shadow-sm";
+                div.innerHTML = `
+                    <span class="text-3xl shrink-0 mt-0.5">${ind.icona}</span>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base sm:text-lg leading-tight">${ind.nome}</h4>
+                        <p class="text-slate-600 text-sm mt-1">${ind.desc}</p>
+                    </div>
+                `;
+                containerIndirizzi.appendChild(div);
+            });
+
+            // Mostra la finestra
+            const modale = document.getElementById('modale-dettaglio');
+            modale.classList.remove('hidden');
+            modale.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Evita lo scorrimento dello sfondo
+        }
+
+        function chiudiModale() {
+            const modale = document.getElementById('modale-dettaglio');
+            modale.classList.add('hidden');
+            modale.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Funzione per ingrandire il testo (Accessibilità)
+        function cambiaTesto(dimensione) {
+            const descrizioni = document.querySelectorAll('.descrizione-card');
+            const btnNorm = document.getElementById('btn-text-norm');
+            const btnLarge = document.getElementById('btn-text-large');
+
+            if (dimensione === 'large') {
+                descrizioni.forEach(el => {
+                    el.classList.remove('text-base', 'sm:text-lg');
+                    el.classList.add('text-xl', 'sm:text-2xl');
+                });
+                btnLarge.className = "px-3 py-1.5 rounded-xl font-bold text-base bg-white shadow text-slate-800 cursor-pointer";
+                btnNorm.className = "px-3 py-1.5 rounded-xl font-bold text-sm text-slate-600 hover:bg-white/60 cursor-pointer";
+            } else {
+                descrizioni.forEach(el => {
+                    el.classList.remove('text-xl', 'sm:text-2xl');
+                    el.classList.add('text-base', 'sm:text-lg');
+                });
+                btnNorm.className = "px-3 py-1.5 rounded-xl font-bold text-sm bg-white shadow text-slate-800 cursor-pointer";
+                btnLarge.className = "px-3 py-1.5 rounded-xl font-bold text-base text-slate-600 hover:bg-white/60 cursor-pointer";
+            }
+        }
+
+        // Logica Mini-Quiz "Bussola" per utenti indecisi
+        let punteggi = { licei: 0, tecnici: 0, professionali: 0, iefp: 0 };
+        let passoQuiz = 0;
+
+        const domandeQuiz = [
+            {
+                domanda: "1. Come preferisci imparare cose nuove?",
+                opzioni: [
+                    { testo: "📚 Leggendo libri, facendo ricerche e ragionando sulle idee", punti: { licei: 3, tecnici: 1 } },
+                    { testo: "💻 Un po' sui libri e un po' al computer o in laboratorio", punti: { tecnici: 3, licei: 1 } },
+                    { testo: "🛠️ Lavorando subito con le mani e facendo pratica", punti: { professionali: 2, iefp: 3 } }
+                ]
+            },
+            {
+                domanda: "2. Cosa immagini di fare dopo le scuole superiori?",
+                opzioni: [
+                    { testo: "🎓 Voglio sicuramente andare all'Università", punti: { licei: 3, tecnici: 1 } },
+                    { testo: "🤔 Vorrei poter scegliere se lavorare o andare all'Università", punti: { tecnici: 3, professionali: 2 } },
+                    { testo: "💼 Vorrei imparare un mestiere e iniziare a lavorare presto", punti: { iefp: 3, professionali: 2 } }
+                ]
+            },
+            {
+                domanda: "3. Quale di queste attività ti attira di più?",
+                opzioni: [
+                    { testo: "🌍 Lingue, arte, scienze o capire come ragionano le persone", punti: { licei: 3 } },
+                    { testo: "⚙️ Tecnologia, informatica, economia o ambiente", punti: { tecnici: 3 } },
+                    { testo: "🍳 Cucina, meccanica, estetica, assistenza o artigianato", punti: { professionali: 3, iefp: 3 } }
+                ]
+            }
+        ];
+
+        function apriBussola() {
+            punteggi = { licei: 0, tecnici: 0, professionali: 0, iefp: 0 };
+            passoQuiz = 0;
+            mostraDomandaQuiz();
+            const modale = document.getElementById('modale-bussola');
+            modale.classList.remove('hidden');
+            modale.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function chiudiBussola() {
+            const modale = document.getElementById('modale-bussola');
+            modale.classList.add('hidden');
+            modale.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        function mostraDomandaQuiz() {
+            const body = document.getElementById('bussola-body');
+            if (passoQuiz < domandeQuiz.length) {
+                const q = domandeQuiz[passoQuiz];
+                let html = `
+                    <div class="mb-4 flex items-center justify-between text-sm font-bold text-indigo-600">
+                        <span>Domanda ${passoQuiz + 1} di ${domandeQuiz.length}</span>
+                        <div class="w-32 bg-indigo-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-indigo-600 h-full transition-all" style="width: ${((passoQuiz + 1) / domandeQuiz.length) * 100}%"></div>
+                        </div>
+                    </div>
+                    <h3 class="font-display text-xl sm:text-2xl font-bold text-slate-800 mb-6">${q.domanda}</h3>
+                    <div class="space-y-3">
+                `;
+                q.opzioni.forEach((opt, idx) => {
+                    html += `
+                        <button onclick="rispondiQuiz(${idx})" class="w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 font-bold text-slate-700 text-base sm:text-lg transition flex items-center justify-between cursor-pointer">
+                            <span>${opt.testo}</span>
+                            <span class="text-indigo-500 text-xl">👉</span>
+                        </button>
+                    `;
+                });
+                html += `</div>`;
+                body.innerHTML = html;
+            } else {
+                // Calcola risultato migliore
+                let vincitore = 'licei';
+                let maxPunti = -1;
+                for (const [scuola, pt] of Object.entries(punteggi)) {
+                    if (pt > maxPunti) {
+                        maxPunti = pt;
+                        vincitore = scuola;
+                    }
+                }
+                const info = datiScuole[vincitore];
+                body.innerHTML = `
+                    <div class="text-center space-y-4">
+                        <div class="inline-block bg-amber-100 text-amber-800 font-bold px-4 py-1.5 rounded-full text-sm">
+                            ✨ Ecco il consiglio della Bussola!
+                        </div>
+                        <div class="text-6xl my-2">${info.icona}</div>
+                        <h3 class="font-display text-2xl sm:text-3xl font-bold text-slate-800">
+                            Potresti iniziare esplorando:<br><span class="text-indigo-600">${info.titolo}</span>
+                        </h3>
+                        <p class="text-slate-600 text-base sm:text-lg max-w-lg mx-auto">
+                            In base alle tue risposte, questa strada sembra molto vicina al tuo modo di imparare!
+                        </p>
+                        <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="chiudiBussola(); apriDettaglio('${vincitore}');" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-2xl text-lg shadow cursor-pointer">
+                                🔍 Apri scheda ${info.titolo}
+                            </button>
+                            <button onclick="apriBussola()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-6 rounded-2xl text-base cursor-pointer">
+                                🔄 Rifai le domande
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function rispondiQuiz(indiceOpzione) {
+            const puntiScelti = domandeQuiz[passoQuiz].opzioni[indiceOpzione].punti;
+            for (const [scuola, val] of Object.entries(puntiScelti)) {
+                punteggi[scuola] += val;
+            }
+            passoQuiz++;
+            mostraDomandaQuiz();
+        }
+
+        // Chiudi modali cliccando fuori dal riquadro bianco
+        window.onclick = function(event) {
+            const modDett = document.getElementById('modale-dettaglio');
+            const modBuss = document.getElementById('modale-bussola');
+            if (event.target === modDett) chiudiModale();
+            if (event.target === modBuss) chiudiBussola();
+        }
+    </script>
+</body>
+</html>
