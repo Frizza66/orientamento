@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientamento - Giochi e Attività per la Terza Media</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .activity-cover {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            opacity: 0.9;
+        }
+
+        .activity-cover span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .activity-info {
+            padding: 20px;
+        }
+
+        .activity-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .activity-info p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .activity-tag {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Colori per le diverse attività */
+        .cover-1 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .cover-2 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .cover-3 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .cover-4 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .cover-5 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .cover-6 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+
+        .tag-game { background: #ffeaa7; color: #d63031; }
+        .tag-activity { background: #dfe6e9; color: #2d3436; }
+        .tag-quiz { background: #74b9ff; color: #0984e3; }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .activities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Orientamento - Terza Media</h1>
+            <p>Giochi e attività per scoprire il tuo futuro!</p>
+        </header>
+
+        <div class="activities-grid">
+            
+            <!-- ATTIVITÀ 1 -->
+            <a href="attivita1.html" class="activity-card">
+                <div class="activity-cover cover-1">
+                    <span>🎯</span>
+                </div>
+                <div class="activity-info">
+                    <h3>Scopri le tue passioni</h3>
+                    <p>Un quiz interattivo per identificare i tuoi interessi e le tue attitudini.</p>
+                    <span class="activity-tag tag-quiz">Quiz</span>
+                </div>
+            </a>
+
+            <!-- ATTIVITÀ 2 -->
+            <a href="attivita2.html" class="activity-card">
+                <div class="activity-cover cover-2">
+                    <span>🗺️</span>
+                </div>
+                <div class="activity-info">
+                    <h3>Mappa delle scuole</h3>
+                    <p>Esplora le diverse scuole superiori della tua zona e scopri cosa offrono.</p>
+                    <span class="activity-tag tag-activity">Attività</span>
+                </div>
+            </a>
+
+            <!-- ATTIVITÀ 3 -->
+            <a href="attivita3.html" class="activity-card">
+                <div class="activity-cover cover-3">
+                    <span>💼</span>
+                </div>
+                <div class="activity-info">
+                    <h3>Le professioni del futuro</h3>
+                    <p>Gioco di ruolo per immaginare il tuo futuro professionale.</p>
+                    <span class="activity-tag tag-game">Gioco</span>
+                </div>
+            </a>
+
+            <!-- ATTIVITÀ 4 -->
+            <a href="attivita4.html" class="activity-card">
+                <div class="activity-cover cover-4">
+                    <span>🤝</span>
+                </div>
+                <div class="activity-info">
+                    <h3>Lavoro di squadra</h3>
+                    <p>Attività collaborative per sviluppare le tue soft skills.</p>
+                    <span class="activity-tag tag-game">Gioco</span>
+                </div>
+            </a>
+
+            <!-- ATTIVITÀ 5 -->
+            <a href="attivita5.html" class="activity-card">
+                <div class="activity-cover cover-5">
+                    <span>📊</span>
+                </div>
+                <div class="activity-info">
+                    <h3>Il mio percorso</h3>
+                    <p>Crea la tua mappa personale per il futuro.</p>
+                    <span class="activity-tag tag-activity">Attività</span>
+                </div>
+            </a>
+
+            <!-- ATTIVITÀ 6 -->
+            <a href="attivita6.html" class="activity-card">
+                <div class="activity-cover cover-6">
+                    <span>🎲</span>
+                </div>
+                <div class="activity-info">
+                    <h3>Gioco dell'orientamento</h3>
+                    <p>Un gioco da tavolo per affrontare le scelte del futuro.</p>
+                    <span class="activity-tag tag-game">Gioco</span>
+                </div>
+            </a>
+
+            <!-- Per aggiungere nuove attività, copia il blocco sopra e modifica:
+                 - href: il link alla pagina dell'attività
+                 - cover-X: il numero del colore (1-6)
+                 - emoji nell'<span>
+                 - titolo in <h3>
+                 - descrizione in <p>
+                 - tag (game, activity, quiz)
+            -->
+
+        </div>
+
+        <footer>
+            <p>Repository GitHub - Orientamento Scuola Secondaria di Primo Grado</p>
+        </footer>
+    </div>
+</body>
+</html>
