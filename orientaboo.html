@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Taboo dell’orientamento</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f4ee;--card:#fff;--tx:#1d2330;--mut:#667085;--a:#2563eb;--b:#e11d74;--ok:#16a34a;--bad:#dc2626;--bd:#d9d5c8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141821;--card:#1e2430;--tx:#eef1f6;--mut:#98a2b3;--a:#60a5fa;--b:#f472b6;--ok:#4ade80;--bad:#f87171;--bd:#323a4a}}
+:root[data-theme="dark"]{--bg:#141821;--card:#1e2430;--tx:#eef1f6;--mut:#98a2b3;--a:#60a5fa;--b:#f472b6;--ok:#4ade80;--bad:#f87171;--bd:#323a4a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.2rem 0 .1rem}
+.mut{color:var(--mut);font-size:.9rem}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:12px 0}
+button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:14px 18px;cursor:pointer;background:var(--tx);color:var(--bg);width:100%;margin:6px 0}
+button.sec{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+button.ok{background:var(--ok);color:#fff}button.bad{background:var(--bad);color:#fff}
+button.ta{background:var(--a);color:#fff}button.tb{background:var(--b);color:#fff}
+input{font:inherit;width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);text-transform:uppercase;letter-spacing:.2em;text-align:center}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.score{display:flex;gap:10px;margin-bottom:8px}
+.sc{flex:1;border-radius:14px;padding:10px;text-align:center;border:2px solid var(--bd);background:var(--card)}
+.sc b{font-size:1.8rem;display:block}.sc.on{border-width:3px}
+.sc.A.on{border-color:var(--a)}.sc.B.on{border-color:var(--b)}
+.word{font-size:2.1rem;font-weight:800;text-align:center;margin:6px 0 14px;overflow-wrap:anywhere}
+.forb{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.forb span{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad);border-radius:10px;padding:10px 6px;text-align:center;font-weight:700;overflow-wrap:anywhere}
+.timer{font-size:2.6rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:8px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);transition:width .25s linear}
+.code{font-size:2rem;font-weight:800;letter-spacing:.25em;text-align:center}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.8rem;font-weight:700;color:#fff}
+.tag.A{background:var(--a)}.tag.B{background:var(--b)}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+var CARDS="Orientamento|scuola,scelta,futuro,superiori;Indirizzo|scuola,materie,tipo,percorso;Qualifica|lavoro,titolo,tre anni,professionale;Diploma|maturità,cinque anni,esame,titolo;Open day|scuola,visita,porte,aperte;Attitudine|portato,capacità,naturale,bravo;Interesse|passione,piacere,curiosità,hobby;Liceo|studio,università,teoria,classico;Istituto tecnico|pratica,laboratorio,lavoro,indirizzo;Istituto professionale|mestiere,pratica,qualifica,lavoro;Formazione professionale|corso,regione,qualifica,mestiere;Consiglio orientativo|professori,scuola,scelta,suggerimento;Iscrizione|domanda,scuola,online,modulo;Maturità|esame,diploma,quinta,superiori;Università|laurea,studiare,dopo,facoltà;ITS|tecnico,superiore,diploma,lavoro;Laboratorio|pratica,esperimenti,strumenti,aula;Stage / PCTO|lavoro,azienda,scuola,esperienza;Competenza|sapere,saper fare,abilità,capacità;Sbocchi lavorativi|lavoro,dopo,diploma,professione;Materie di indirizzo|scuola,specifiche,caratteristiche,percorso;Biennio|primi,due,anni,superiori;Curriculum|lavoro,storia,esperienze,foglio;Professione|lavoro,mestiere,fare,carriera;Pendolare|treno,autobus,viaggio,scuola;Ripetente|bocciato,anno,voti,classe;Tutor|aiuto,guida,scuola,seguire;Erasmus|estero,studenti,Europa,scambio;Borsa di studio|soldi,merito,premio,scuola;Punto di forza|bravo,qualità,materia,migliore;Colloquio|domande,parlare,lavoro,esame;Scelta consapevole|decidere,informato,pensare,futuro".split(";").map(function(s){var p=s.split("|");return{w:p[0],f:p[1].split(",")}});
+var TURNS=6,DUR=60,NAMES=["Squadra A","Squadra B"],CL=["A","B"];
+var $=document.getElementById("app"),S={v:0,phase:"lobby"},me=null,code="",room=null,localEnd=0,tick=null,mode="menu";
+
+function shuffle(n){var a=[],i,j,t;for(i=0;i<n;i++)a.push(i);for(i=n-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=a[i];a[i]=a[j];a[j]=t}return a}
+function newGame(){return{v:1,phase:"ready",turn:0,scores:[0,0],deck:shuffle(CARDS.length),i:0,passes:0,dur:DUR}}
+function put(ns){ns.v=(S.v||0)+1;apply(ns);if(room)room.emit("state",ns).catch(function(){})}
+function apply(ns){
+  if(!ns||typeof ns.v!=="number")return;
+  var fresh=ns.phase==="play"&&(S.phase!=="play"||S.turn!==ns.turn);
+  S=ns;if(fresh||(ns.phase==="play"&&!localEnd))localEnd=Date.now()+(+ns.dur||DUR)*1000;
+  if(ns.phase!=="play")localEnd=0;
+  draw();
+}
+function card(){var c=CARDS[S.deck[S.i%CARDS.length]];return c||CARDS[0]}
+function next(d,k){var n=JSON.parse(JSON.stringify(S));n.scores[S.turn]+=d;n.i++;if(k==="pass")n.passes++;put(n)}
+function endTurn(){var n=JSON.parse(JSON.stringify(S));n.turn=1-S.turn;n.passes=0;n.i++;n.done=(S.done||0)+1;n.phase=n.done>=TURNS?"end":"ready";put(n)}
+function startTurn(){var n=JSON.parse(JSON.stringify(S));n.phase="play";n.passes=0;n.dur=DUR;put(n);localEnd=Date.now()+DUR*1000}
+
+function join(c){
+  code=c.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,8);
+  mode="game";
+  claude.use("room").then(function(r){
+    if(!r||!r.join){draw();return}
+    return r.join("taboo-"+code).then(function(nr){
+      room=nr;
+      room.on("state",function(m){if(!m.isMe&&m.data&&m.data.v>S.v)apply(m.data)});
+      room.on("hello",function(m){if(!m.isMe&&S.v>0)room.emit("state",S).catch(function(){})});
+      room.emit("hello",1).catch(function(){});
+      room.onPeers(function(){if(S.phase==="lobby")draw()});
+      announce();
+      draw();
+    });
+  }).catch(function(){draw()});
+  draw();
+}
+function announce(){if(room&&me!==null)room.presence({team:me}).catch(function(){})}
+function status(){
+  var on=[me===0,me===1],clash=false;
+  if(room)room.peers().forEach(function(p){var t=p.presence&&p.presence.team;if(t===0||t===1){if(p.isMe)return;if(t===me)clash=true;on[t]=true}});
+  return{on:on,clash:clash};
+}
+function rnd(){var a="abcdefghjkmnpqrstuvwxyz23456789",s="",i;for(i=0;i<4;i++)s+=a[Math.floor(Math.random()*a.length)];return s}
+
+function scoreBar(){
+  return '<div class="score">'+[0,1].map(function(t){return '<div class="sc '+CL[t]+(S.turn===t&&S.phase!=="end"?" on":"")+'"><span class="mut">'+NAMES[t]+'</span><b>'+S.scores[t]+'</b></div>'}).join("")+'</div>';
+}
+function roleOf(){return me===null?"both":(me===S.turn?"desc":"ref")}
+function draw(){
+  var h="";
+  if(mode==="menu"){
+    h='<h1>🎯 Taboo dell’orientamento</h1><p class="mut">Per le classi terze della scuola secondaria di primo grado. Due squadre, un dispositivo per squadra.</p>'+
+    '<div class="box"><b>Di cosa si tratta</b><p>Scegliere la scuola superiore è più facile se le parole dell’orientamento sono chiare: indirizzo, qualifica, attitudine, open day… In questo gioco dovete far indovinare ogni parola alla vostra squadra spiegandola <b>con parole vostre</b>, senza usare quelle vietate. È il modo migliore per capire davvero i concetti e ricordarli.</p></div>'+
+    '<div class="box"><b>Come si gioca</b><ol style="padding-left:1.2rem;margin:.5rem 0 0"><li>Si formano <b>2 squadre</b> da 4-6 alunni. Ogni squadra ha un dispositivo.</li><li>Una squadra crea la partita e l’altra entra con il <b>codice</b>.</li><li>A turno, un giocatore della squadra di turno <b>spiega la parola</b> in alto sullo schermo, senza dire le <b>4 parole vietate</b>. Non valgono gesti, mimica, iniziali o traduzioni.</li><li>I compagni hanno <b>60 secondi</b> per indovinare. Chi spiega non fa vedere lo schermo alla sua squadra.</li><li>L’<b>altra squadra</b> vede la stessa carta sul proprio dispositivo e preme <b>TABOO!</b> se sente una parola vietata.</li></ol></div>'+
+    '<div class="box"><b>Punteggio</b><p style="margin:.5rem 0 0">Parola indovinata <b>+1</b> · parola vietata pronunciata <b>−1</b> · carta passata <b>0</b> (massimo 2 passaggi a turno). Si giocano <b>3 giri</b> a testa e vince la squadra con più punti.</p></div>'+
+    '<div class="box"><button id="new">Crea una partita</button><p class="mut" style="text-align:center">oppure inserisci il codice dell’altra squadra</p><input id="cd" maxlength="8" placeholder="CODICE"><button class="sec" id="jn">Entra</button></div>'+
+    '<div class="box mut">Su un solo dispositivo? Crea una partita e scegli «Gioco su un solo dispositivo».</div>';
+    $.innerHTML=h;
+    document.getElementById("new").onclick=function(){join(rnd())};
+    document.getElementById("jn").onclick=function(){var v=document.getElementById("cd").value;if(v.trim())join(v)};
+    return;
+  }
+  if(me===null&&S.phase==="lobby"&&!window._solo){
+    h='<h1>Partita <span class="code" style="font-size:1.4rem">'+code.toUpperCase()+'</span></h1>'+
+    '<p class="mut">Dai il codice all’altra squadra: dovrà inserirlo nel suo dispositivo. Questo dispositivo è della…</p>'+
+    '<div class="box"><button class="ta" id="ta">Squadra A</button><button class="tb" id="tb">Squadra B</button></div>'+
+    '<button class="sec" id="solo">Gioco su un solo dispositivo</button><button class="sec" id="back">Indietro</button>';
+    $.innerHTML=h;
+    document.getElementById("ta").onclick=function(){me=0;announce();draw()};
+    document.getElementById("tb").onclick=function(){me=1;announce();draw()};
+    document.getElementById("solo").onclick=function(){window._solo=1;draw()};
+    document.getElementById("back").onclick=function(){if(room)room.leave();room=null;mode="menu";draw()};
+    return;
+  }
+  if(S.phase==="lobby"){
+    var st=status(),ready=me===null||(st.on[0]&&st.on[1]&&!st.clash);
+    h='<h1>Partita <span class="code" style="font-size:1.4rem">'+code.toUpperCase()+'</span></h1>'+
+    (me!==null?'<p>Questo dispositivo: <span class="tag '+CL[me]+'">'+NAMES[me]+'</span></p>':'<p class="mut">Modalità dispositivo singolo</p>')+
+    '<div class="box"><b>Regole</b><p class="mut">Il turno dura 60 secondi. Chi spiega fa indovinare la parola alla propria squadra senza dire le parole vietate, né gesti, iniziali o traduzioni. L’altra squadra controlla sul suo dispositivo e preme TABOO!. Indovinata +1, vietata −1, massimo 2 passaggi a turno. Si fanno 3 giri a testa.</p></div>'+
+    '<div class="box"><b>Prova di collegamento</b>'+(me===null?'<p class="mut">Modalità dispositivo singolo: non serve il collegamento.</p>':[0,1].map(function(t){var ok=st.on[t];return '<p style="margin:.5rem 0;display:flex;justify-content:space-between"><span class="tag '+CL[t]+'">'+NAMES[t]+'</span><b style="color:var(--'+(ok?'ok':'mut')+')">'+(ok?(t===me?'✓ questo dispositivo':'✓ collegata'):'in attesa…')+'</b></p>'}).join("")+(st.clash?'<p style="color:var(--bad)">Le due squadre hanno scelto lo stesso nome: una delle due deve cambiare squadra.</p>':(ready?'<p style="color:var(--ok)"><b>Collegamento riuscito!</b> Potete iniziare.</p>':'<p class="mut">Sull’altro dispositivo inserite il codice <b>'+code.toUpperCase()+'</b> e scegliete l’altra squadra.</p>')))+'</div>'+
+    '<button id="go"'+(ready?'':' disabled style="opacity:.45"')+'>Inizia la partita</button>'+(me!==null?'<button class="sec" id="chg">Cambia squadra</button>':'');
+    $.innerHTML=h;
+    document.getElementById("go").onclick=function(){if(ready)put(newGame())};
+    if(document.getElementById("chg"))document.getElementById("chg").onclick=function(){me=null;if(room)room.presence({team:null}).catch(function(){});draw()};
+    return;
+  }
+  h=scoreBar();
+  var r=roleOf(),round=Math.floor((S.done||0)/2)+1;
+  if(S.phase==="ready"){
+    h+='<div class="box"><p class="mut">Giro '+round+' di 3</p><h1>Tocca a '+NAMES[S.turn]+'</h1>'+
+    (r==="ref"?'<p>Siete l’altra squadra: dovrete controllare le parole vietate.</p><p class="mut">Aspettate che l’altra squadra prema Via.</p>':
+    '<p>Scegliete chi spiega: gli altri devono solo indovinare, senza guardare lo schermo.</p><button id="st">Via! (60 secondi)</button>')+'</div>';
+  }else if(S.phase==="play"){
+    var c=card(),left=Math.max(0,Math.ceil((localEnd-Date.now())/1000));
+    h+='<div class="timer" id="tm">'+left+'</div><div class="bar"><i id="br" style="width:'+(left/(S.dur||DUR)*100)+'%"></i></div>'+
+    '<div class="box"><div class="mut" style="text-align:center">'+(r==="ref"?"Controlla: "+NAMES[1-S.turn]:"Fai indovinare")+'</div><div class="word" id="cw"></div><div class="forb" id="cf"></div></div>';
+    if(r==="desc"||r==="both")h+='<div class="row"><button class="ok" id="ok">Indovinata +1</button><button class="sec" id="ps">Passa ('+(2-S.passes)+')</button></div>';
+    if(r==="ref"||r==="both")h+='<button class="bad" id="tb2">TABOO! −1</button>';
+    h+='<button class="sec" id="fine">Fine turno</button>';
+  }else if(S.phase==="end"){
+    var w=S.scores[0]===S.scores[1]?"Pareggio!":NAMES[S.scores[0]>S.scores[1]?0:1]+" vince!";
+    h+='<div class="box"><h1>'+w+'</h1><b>Debrief (5 minuti)</b><ol><li>Quali parole sono state più difficili da spiegare? Forse sono i concetti ancora poco chiari.</li><li>Quale parola vi ha fatto pensare «Ah, quindi è questo!»?</li><li>Quale parola vi serve di più per la scelta che state per fare?</li></ol></div><button id="again">Nuova partita</button>';
+  }
+  $.innerHTML=h;
+  var g=function(i){return document.getElementById(i)};
+  if(S.phase==="play"){
+    var cc=card();g("cw").textContent=cc.w;
+    cc.f.forEach(function(f){var s=document.createElement("span");s.textContent=f;g("cf").appendChild(s)});
+    if(g("ok"))g("ok").onclick=function(){next(1)};
+    if(g("ps"))g("ps").onclick=function(){if(S.passes<2)next(0,"pass")};
+    if(g("tb2"))g("tb2").onclick=function(){next(-1)};
+    g("fine").onclick=endTurn;
+  }
+  if(g("st"))g("st").onclick=startTurn;
+  if(g("again"))g("again").onclick=function(){put(newGame())};
+}
+setInterval(function(){
+  if(S.phase!=="play")return;
+  var left=Math.max(0,Math.ceil((localEnd-Date.now())/1000)),t=document.getElementById("tm"),b=document.getElementById("br");
+  if(t)t.textContent=left;if(b)b.style.width=(left/(S.dur||DUR)*100)+"%";
+  if(left<=0&&(roleOf()!=="ref")){endTurn()}
+},250);
+draw();
+</script>
+</body>
+</html>
